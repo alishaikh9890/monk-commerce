@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {Row, Col, Container} from 'react-bootstrap'
 import { v4 as uuidv4 } from "uuid";
 import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, closestCorners, useSensor } from "@dnd-kit/core";
 import Column from "./column/Column";
@@ -11,10 +12,42 @@ import AddProduct from "./AddProduct";
 function ProductList() {
 
     const [show, setShow] = useState(false)
-
+    const [inputId, setInputId] = useState("")
+    const [select, setSelect] = useState([])
     const [prod, setProd] = useState([
-    //    {id:uuidv4(), title:"welcome", status:false},
+       { task:{}, id:uuidv4(), status:false},
     ]);
+
+
+
+    const handleAdd = () => {
+        
+    }
+
+    const handleSelect = (e, element, index) => {
+        let event = e.target.checked
+    //    const newEle = prod.find((ele) => ele.id == inputId)
+    //     newEle.task = element
+    //    const newProd = prod.map((ele) => ele.id == inputId ? ele = newEle : ele )
+    //    console.log(newProd)
+    //    console.log(element)
+
+
+    if(event)
+    {
+        setSelect([...select, select[index]=element])
+    }
+    else{
+        setSelect([...select, select.splice(index, 1)])
+    }
+
+    // console.log(select)
+    // select.map(el=>console.log(el))
+
+    // console.log(e.target.checked)
+   
+ 
+    }
 
 
     const getProdPos = id => prod.findIndex(prod => prod.id === id);
@@ -54,99 +87,32 @@ function ProductList() {
     };
 
     const handleProduct = () => {
-        setProd([...prod, { status: false, id: uuidv4()}]);
+        setProd([...prod, {task:{},  status: false, id: uuidv4()}]);
     };
 
     return (
-        // <div className="container my-5" style={{ maxWidth: "600px" }}>
-        //     <h4>Add Products</h4>
-        //     <div className="row g-2 mb-3">
-        //         <div className="col-1"></div>
-        //         <div className="col-7">Product</div>
-        //         <div className="col-4">Discount</div>
-        //     </div>
-        //     {prod.map((ele, index) => (
-        //         <div className="row g-2 my-3 align-content-center">
-        //             <div className="col-1 d-flex justify-content-between align-items-center">
-        //                 <span className="badge text-bg-light fs-5 px-0">⋮⋮</span>
-        //                 <span>{index + 1}.</span>
-        //             </div>
-        //             <div className="col-7">
-        //                 <Paper
-        //                     component="form"
-        //                     sx={{
-        //                         p: "2px 4px",
-        //                         display: "flex",
-        //                         alignItems: "center",
-        //                     }}
-        //                 >
-                            
-        //                     <InputBase
-        //                         sx={{ ml: 1, flex: 1 }}
-        //                         placeholder="Select"
-        //                         inputProps={{ "aria-label": "Select Products" }}
-        //                     />
-        //                     <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-        //                         <SearchIcon />
-        //                     </IconButton>
-                           
-        //                 </Paper>
-        //             </div>
-        //             <div className="col-4">
-        //                 {!ele.status ? (
-        //                     <Button
-        //                         onClick={() => addDiscount(ele.id)}
-        //                         variant="contained"
-        //                         color="success"
-        //                     >
-        //                         Add Discount
-        //                     </Button>
-        //                 ) : (
-        //                     <div className="row g-1">
-        //                         <div className="col-4">
-        //                             <input
-        //                                 type="text"
-        //                                 placeholder=""
-        //                                 value="0"
-        //                                 className="form-control rounded-0 shadow-1"
-        //                             />
-        //                         </div>
-        //                         <div className="col-6">
-        //                             <select
-        //                                 class="form-select"
-        //                                 aria-label="Default select example"
-        //                             >
-        //                                 <option selected>% off</option>
-        //                                 <option value="1">flat off</option>
-        //                             </select>
-        //                         </div>
-        //                         <div className="col-2">
-        //                             <span
-        //                                 onClick={() => delProduct(ele.id)}
-        //                                 className="btn btn-close "
-        //                             ></span>
-        //                         </div>
-        //                     </div>
-        //                 )}
-        //             </div>
-        //         </div>
-        //     ))}
-        //     <div className="my-3 text-end">
-        //         <Button onClick={handleProduct} variant="outlined" color="success">
-        //             Add Product
-        //         </Button>
-        //     </div>
-        // </div>
+    
 
         <div className="App">
-
+       <Container  style={{maxWidth:"768px"}}>
+        <Row className=" my-5 ps-5">
+            <Col>
+                <h4>Add Products</h4>
+            </Col>
+        </Row>
+        <Row className="text-center">
+            <Col>Products</Col>
+            <Col>Discount</Col>
+        </Row>
+       </Container>
+          
         <DndContext sensors={sensors} onDragEnd={handleDragEnd} collisionDetection={closestCorners}>
-            <Column prod={prod} addDiscount={addDiscount} delProduct={delProduct} show={show} setShow={setShow} />
+            <Column prod={prod} addDiscount={addDiscount} delProduct={delProduct} show={show} setShow={setShow} setInputId={setInputId} />
         </DndContext>
 
         <AddProduct handleProduct={handleProduct}/>
 
-    <ProductPicker show={show} setShow={setShow}/>
+    <ProductPicker show={show} setShow={setShow} handleSelect={handleSelect} handleAdd={handleAdd}/>
 
 
         </div>

@@ -2,7 +2,7 @@ import { Button, Modal,ListGroup, Stack, Spinner, Form } from 'react-bootstrap'
 import React, { useEffect, useState } from 'react'
 
 
-const ProductPicker = ({ show, setShow }) => {
+const ProductPicker = ({ show, setShow, handleSelect, handleAdd }) => {
     const [search, setSearch] = useState("")
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -13,7 +13,7 @@ const ProductPicker = ({ show, setShow }) => {
     const fetchData = async () => {
         setLoading(true)
         try {
-            const res = await fetch(`https://stageapi.monkcommerce.app/task/products/search?search=${search}&page=1&limit=10`,
+            const res = await fetch(`https://stageapi.monkcommerce.app/task/products/search?search=${search}&page=1&limit=20`,
                 {
                     method: "GET",
                     headers: {
@@ -42,15 +42,16 @@ const ProductPicker = ({ show, setShow }) => {
     return (
         
             <Modal size="lg" show={show} onHide={()=>setShow(false)} >
-                <Modal.Header closeButton>
-                    <Modal.Title >Add Products</Modal.Title>
+                <Modal.Header closeButton className='py-2 px-4'>
+                    <Modal.Title className='fs-5' >Select Products</Modal.Title>
+                </Modal.Header>
+                <Modal.Header className='py-2 px-4'>
+                <input placeholder='🔎 search items' onChange={(e) => setSearch(e.target.value)} className='form-control rounded-0 px-4' />
                 </Modal.Header>
                 
                 
                 <Modal.Body className='p-0 overflow-auto'  style={{maxHeight:"70vh"}}>
-                <div className='border py-2 px-5 '>
-                    <input placeholder='🔎 search items' onChange={(e) => setSearch(e.target.value)} className='form-control rounded-0 px-4' />
-                </div>
+               
                 
                 <ListGroup variant="flush" className='border'>
                 {
@@ -61,14 +62,14 @@ const ProductPicker = ({ show, setShow }) => {
                     )
                         : error ? 
                         "someting went wrong" :
-                    data.map((ele) =>   (
-                        <ListGroup.Item key={ele.id} className='p-0' >
+                    data.map((ele, index) =>   (
+                        <ListGroup.Item action key={ele.id} className='p-0' >
                             <Stack direction="horizontal" className='px-3' gap={3}>
                                 <div className="py-2">
                                 <input
                                     type='checkbox'
                                     className='form-check-input checkbox'
-                               
+                               onChange={(e) => handleSelect(e, ele, index)}
                               />
                                 </div>
                                 <div className="py-2">
@@ -79,7 +80,7 @@ const ProductPicker = ({ show, setShow }) => {
                             <ListGroup variant="flush" className='border-top p-0'>
                             {
                                 ele.variants?.map((el) => (
-                                    <ListGroup.Item key={el.id} >
+                                    <ListGroup.Item action key={el.id} >
                                     <Stack className='px-5' direction="horizontal" gap={3}>
                                     <div className="py-2">
                                     <input
@@ -110,11 +111,12 @@ const ProductPicker = ({ show, setShow }) => {
 
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" >
-                        Close
+                <p>1 Product Selected</p>
+                    <Button variant="outline-secondary ms-auto" >
+                        Cancel
                     </Button>
-                    <Button variant="primary" >
-                        Save Changes
+                    <Button onClick={handleAdd} variant="success" >
+                        Add
                     </Button>
                 </Modal.Footer>
             </Modal>

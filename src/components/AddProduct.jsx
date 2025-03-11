@@ -1,17 +1,16 @@
 import React from 'react'
-import { Button } from 'react-bootstrap'
+import { Button, Container } from 'react-bootstrap'
 
 
 
 const AddProduct = ({handleProduct}) => {
   return (
-    <div>
-    <div className="text-end">
-    <Button onClick={handleProduct} variant="outline-success rounded-1 " style={{width:"200px"}}>
-                 Add Product
-             </Button>
-         </div>
-     </div>
+    <Container className='text-end p-3' style={{maxWidth:"720px"}}>
+      <Button onClick={handleProduct} variant="outline-success rounded-0 border-2 " style={{width:"300px"}}>
+                  Add Product
+        </Button>
+    </Container>
+    
   )
 }
 

@@ -19,6 +19,7 @@
     "@mui/material": "^6.4.7",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
+    "netlify-cli": "^19.0.2",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0",
