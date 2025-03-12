@@ -2,9 +2,8 @@
     /* background-color: #f2f2f3; */
     border-radius: 5px;
     padding: 5px;
-    width: 80%;
-    max-width: 768px;
     display: flex;
+    width: 100%;
     flex-direction: column;
     gap: 5px;
 }

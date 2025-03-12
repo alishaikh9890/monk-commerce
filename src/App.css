@@ -11,7 +11,9 @@
   flex-direction: column;
   align-items: center;
   gap: 5px;
+  margin: auto;
   margin-top: 10px;
+  max-width: 768px;
 }
 
 .checkbox{

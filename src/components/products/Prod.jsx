@@ -6,8 +6,9 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
 import { Button, Stack, Collapse } from 'react-bootstrap'
+import Variant from '../variants/Variant'
 
-const Prod = ({ id, status, index, task, addDiscount, delProduct, show, setShow, setInputId }) => {
+const Prod = ({ id, status, index, task, addDiscount, delProduct, show, setShow, setInputId, pl, delVariant }) => {
 
     const [open, setOpen] = useState(false)
 
@@ -27,7 +28,7 @@ const Prod = ({ id, status, index, task, addDiscount, delProduct, show, setShow,
                     <span ref={setNodeRef} {...attributes} {...listeners}>⋮⋮</span>
                     {index + 1}.
                     <div className='d-flex shadow-input w-75 position-relative p-1'>
-                        <input type='text' value={task.title} className='rounded-0 form-control border-0 bg-white' disabled placeholder='Select Product' />
+                        <input type='text' defaultValue={task.title} className='rounded-0 form-control border-0 bg-white' disabled placeholder='Select Product' />
                         <Button onClick={() => { setShow(!show); setInputId(id) }} style={{ right: "5px", top: "5px" }} variant="light" size="sm">🖋️</Button>
                     </div>
 
@@ -40,32 +41,32 @@ const Prod = ({ id, status, index, task, addDiscount, delProduct, show, setShow,
                             Add Discount
                         </Button>
                     ) : (
-                        <div className="row g-1 align-items-center">
-                            <div className="col-4">
+                        <div className="d-flex gap-1 align-items-center discount">
                                 <input
                                     type="text"
-                                    placeholder=""
-                                    value="0"
-                                    className="form-control rounded-0 shadow-1"
+                                    placeholder="0"
+                                    
+                                    className="form-control rounded-0 shadow-1 fs-6"
                                 />
-                            </div>
-                            <div className="col-6">
                                 <select
-                                    class="form-select"
+                                    className="form-select rounded-0"
                                     aria-label="Default select example"
                                 >
                                     <option>% off</option>
                                     <option >flat off</option>
                                 </select>
-                            </div>
-                            <div className="col-2">
-                                <span
-                                    onClick={() => delProduct(id)}
-                                    className="btn btn-close "
-                                ></span>
-                            </div>
                         </div>
                     )}
+                  
+                    {
+                        pl>=2 &&
+                        <div className="">
+                        <span
+                            onClick={() => delProduct(id)}
+                            className="btn btn-close btn-sm "
+                        ></span>
+                    </div>
+                    }
 
                 </div>
                 <div className='ps-5'>
@@ -81,69 +82,21 @@ const Prod = ({ id, status, index, task, addDiscount, delProduct, show, setShow,
                         >
                             {!open ?
                                  ( 
-                                    <span><span  className='border-bottom border-primary' >hide variants </span> <i class="bi bi-chevron-down"></i></span>
+                                    <span role="button"  ><span className='border-bottom border-primary' >hide variants </span> <i className="bi bi-chevron-down"></i></span>
                                     ) : ( 
-                                     <span><span className="border-bottom border-primary">show variants</span> <i class="bi bi-chevron-up"></i></span>
+                                     <span role="button"  ><span className="border-bottom border-primary">show variants</span> <i className="bi bi-chevron-up"></i></span>
                                 )}
                         </small>
                         )  
                        }
-                        
-                       
                         </div>
-                        <Collapse in={!open} >
+                        <Collapse in={open} >
                             <div>
-                            
                             {
                                 task.variants?.map((vr) => (
-                                    <div className='Prod' key={vr.id}>
-                                        <span >⋮⋮</span>
-
-                                        <div className='d-flex shadow-input w-75 position-relative overflow-hidden rounded-pill'>
-                                            <input type='text' value={vr.title} className='rounded-0 form-control border-0 bg-white' disabled placeholder='Select Product' />
-                                            {/* <Button onClick={() => {setShow(!show); setInputId(id)}} style={{ right:"5px", top:"5px"}} variant="light" size="sm">🖋️</Button> */}
-                                        </div>
-
-                                        {!status ? (
-                                            <Button
-                                                onClick={() => addDiscount(id)}
-                                                variant="success"
-                                                className='rounded-1 discount'
-                                            >
-                                                Add Discount
-                                            </Button>
-                                        ) : (
-                                            <div className="row g-1 align-items-center">
-                                                <div className="col-4">
-                                                    <input
-                                                        type="text"
-                                                        placeholder=""
-                                                        value="0"
-                                                        className="form-control rounded-pill shadow-1"
-                                                    />
-                                                </div>
-                                                <div className="col-6">
-                                                    <select
-                                                        className="form-select rounded-pill"
-                                                        aria-label="Default select example"
-                                                    >
-                                                        <option>% off</option>
-                                                        <option >flat off</option>
-                                                    </select>
-                                                </div>
-                                                <div className="col-2">
-                                                    <span
-                                                        onClick={() => delProduct(id)}
-                                                        className="btn btn-close btn-sm "
-                                                    ></span>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                    </div>
+                                    <Variant key={vr.id} {...vr} delVariant={delVariant} vlength={task.variants.length} pro_id={id} />
                                 ))
                             }
-
                             </div>
                         </Collapse>
                     </Stack>

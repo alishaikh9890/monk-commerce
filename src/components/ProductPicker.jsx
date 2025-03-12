@@ -1,8 +1,10 @@
 import { Button, Modal,ListGroup, Stack, Spinner, Form } from 'react-bootstrap'
 import React, { useEffect, useState } from 'react'
 
+import Picker from './picker/Picker';
 
-const ProductPicker = ({ show, setShow, handleSelect, handleAdd }) => {
+
+const ProductPicker = ({ show, setShow, handleSelect, handleAdd, select, handleSelectVarent }) => {
     const [search, setSearch] = useState("")
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -62,17 +64,18 @@ const ProductPicker = ({ show, setShow, handleSelect, handleAdd }) => {
                     )
                         : error ? 
                         "someting went wrong" :
-                    data.map((ele, index) =>   (
-                        <ListGroup.Item action key={ele.id} className='p-0' >
-                            <Stack direction="horizontal" className='px-3' gap={3}>
+                    data.map((ele) =>   (
+                        <ListGroup.Item  key={ele.id} className='p-0' >
+                            <Stack direction="horizontal" onClick={() => handleSelect(ele)} className='px-3' gap={3}>
                                 <div className="py-2">
                                 <input
                                     type='checkbox'
+                                    checked={select?.some(se => se.id === ele.id)}
                                     className='form-check-input checkbox'
-                               onChange={(e) => handleSelect(e, ele, index)}
+                               
                               />
                                 </div>
-                                <div className="py-2">
+                                <div className="py-2"  >
                                      <img width="40px" height="40px" className='img-fluid rounded-1 overflow-hidden' src={ele.image.src} />
                                 </div>
                                 <div className="py-2">{ele.title}</div>
@@ -80,25 +83,7 @@ const ProductPicker = ({ show, setShow, handleSelect, handleAdd }) => {
                             <ListGroup variant="flush" className='border-top p-0'>
                             {
                                 ele.variants?.map((el) => (
-                                    <ListGroup.Item action key={el.id} >
-                                    <Stack className='px-5' direction="horizontal" gap={3}>
-                                    <div className="py-2">
-                                    <input
-                                        type='checkbox'
-                                        className='form-check-input checkbox'
-                                   
-                                  />
-                                    </div>
-                                    
-                                    <div className="p-2">{el.title}</div>
-                                    <div className="p-2 ms-auto">
-                                        {el.inventory_quantity} availaible
-                                    </div>
-                                    <div className="py-2">
-                                    ₹ {el.price} 
-                                    </div>
-                                </Stack>
-                                    </ListGroup.Item>
+                                   <Picker key={el.id}  el={el} ele={ele} select={select} handleSelectVarent={handleSelectVarent} />
                                 ))
                             }
                                
@@ -111,7 +96,7 @@ const ProductPicker = ({ show, setShow, handleSelect, handleAdd }) => {
 
                 </Modal.Body>
                 <Modal.Footer>
-                <p>1 Product Selected</p>
+                <p>{select.length} Product Selected</p>
                     <Button variant="outline-secondary ms-auto" >
                         Cancel
                     </Button>
