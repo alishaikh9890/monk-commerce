@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import { Row, Col, Container } from 'react-bootstrap'
 import { v4 as uuidv4 } from "uuid";
 import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, closestCorners, useSensor } from "@dnd-kit/core";
-import Column from "./column/Column";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useSensors } from "@dnd-kit/core";
 import ProductPicker from "./ProductPicker";
+import Column from "./column/Column";
 import AddProduct from "./AddProduct";
 
 
 function ProductList() {
 
-    const [show, setShow] = useState(false)
+    const [show, setShow] = useState(false);
     const [inputId, setInputId] = useState("")
     const [select, setSelect] = useState([])
     const [prod, setProd] = useState([
@@ -128,7 +128,7 @@ function ProductList() {
 
         <div className="App">
             <Container style={{ maxWidth: "768px" }}>
-                <Row className=" my-5 ps-5">
+                <Row className=" my-3 ps-5">
                     <Col>
                         <h4>Add Products</h4>
                     </Col>
@@ -140,7 +140,7 @@ function ProductList() {
             </Container>
 
             <DndContext sensors={sensors} onDragEnd={handleDragEnd} collisionDetection={closestCorners}>
-                <Column prod={prod} addDiscount={addDiscount} delProduct={delProduct} show={show} setShow={setShow} setInputId={setInputId} delVariant={delVariant} />
+                <Column prod={prod} addDiscount={addDiscount} delProduct={delProduct} show={show} setShow={setShow} setInputId={setInputId} delVariant={delVariant} setProd={setProd} />
             </DndContext>
 
             <AddProduct handleProduct={handleProduct} />

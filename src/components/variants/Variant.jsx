@@ -1,11 +1,28 @@
 import React from 'react'
 
-const Variant = ({id, title, delVariant, vlength, pro_id}) => {
-  return (
-    <div className='Prod' key={id}>
-                                        <span >⋮⋮</span>
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
-                                        <div className='d-flex shadow-input w-75 position-relative overflow-hidden rounded-pill'>
+
+
+const Variant = ({id, title, delVariant, vlength, pro_id, status, offer}) => {
+
+
+        const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id })
+
+        const style = {
+            transition,
+            transform: CSS.Transform.toString(transform),
+            pointerEvents: transform ? 'none' : 'auto',
+        }
+    
+
+
+  return (
+    <div className='Prod' key={id} style={style}>
+                                        <span ref={setNodeRef} {...attributes} {...listeners} >⋮⋮</span>
+
+                                        <div className='d-flex shadow-input w-75 border position-relative overflow-hidden rounded-pill'>
                                             <input type='text' value={title} className='rounded-0 form-control border-0 bg-white' disabled placeholder='Select Product' />
                                         </div>
 
@@ -19,7 +36,7 @@ const Variant = ({id, title, delVariant, vlength, pro_id}) => {
                                                     <input
                                                         type="text"
                                                         placeholder=""
-                                                        value="0"
+                                                        value={offer}
                                                         className="form-control rounded-pill shadow-1"
                                                     />
                                                 </div>

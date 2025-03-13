@@ -1,6 +1,16 @@
 import React, {useState} from 'react'
 import './Prod.css'
+
+
+import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, closestCorners, useSensor } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
+import { useSensors } from "@dnd-kit/core";
 // import { v4 as uuidv4 } from "uuid";
+
+import {
+    SortableContext,
+    verticalListSortingStrategy,
+  } from "@dnd-kit/sortable";
 
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -8,7 +18,9 @@ import { CSS } from '@dnd-kit/utilities'
 import { Button, Stack, Collapse } from 'react-bootstrap'
 import Variant from '../variants/Variant'
 
-const Prod = ({ id, status, index, task, addDiscount, delProduct, show, setShow, setInputId, pl, delVariant }) => {
+const Prod = ({ id, status, index, task, addDiscount, delProduct, show, setShow, setInputId, pl, delVariant, prod, setProd }) => {
+
+    const [offer, setOffer] = useState(0)
 
     const [open, setOpen] = useState(false)
 
@@ -21,15 +33,50 @@ const Prod = ({ id, status, index, task, addDiscount, delProduct, show, setShow,
     }
 
 
+
+    //---- dragable start ----------
+    
+       
+    const getProdPos = (id) => task.variants.findIndex(vr => vr.id === id);
+
+    const handleDragEnd = event => {
+        const { active, over } = event;
+
+        if (active.id === over.id) return;
+
+            const originalPos = getProdPos(active.id);
+                  const newPos = getProdPos(over.id)
+                  let newVariant = arrayMove(task.variants, originalPos, newPos)
+
+                  let newProd = prod.map((ele) => {
+                    if(ele.id==id)
+                    {
+                        ele.task.variants = newVariant
+                    }
+                    return ele;
+                  })
+
+        setProd(newProd)
+          }
+      
+          const sensors = useSensors(
+              useSensor(PointerSensor),
+              useSensor(TouchSensor),
+              useSensor(KeyboardSensor),
+          )
+    
+        //---- dragable end ----------
+
+
     return (
         <div style={style}>
-            <Stack >
+            <Stack>
                 <div className='Prod'>
-                    <span ref={setNodeRef} {...attributes} {...listeners}>⋮⋮</span>
+                    <span ref={setNodeRef} {...attributes} {...listeners}><b>⋮⋮</b></span>
                     {index + 1}.
-                    <div className='d-flex shadow-input w-75 position-relative p-1'>
-                        <input type='text' defaultValue={task.title} className='rounded-0 form-control border-0 bg-white' disabled placeholder='Select Product' />
-                        <Button onClick={() => { setShow(!show); setInputId(id) }} style={{ right: "5px", top: "5px" }} variant="light" size="sm">🖋️</Button>
+                    <div className='d-flex shadow-input w-75 position-relative border px-1' style={{padding:"2px"}}>
+                        <input type='text' defaultValue={task.title} className='rounded-0 form-control form-control-sm border-0 bg-white' disabled placeholder='Select Product' />
+                        <Button onClick={() => { setShow(!show); setInputId(id) }} style={{ right: "5px", top: "5px" }} variant="light" size="sm"><i className="bi bi-pencil-fill text-success"></i></Button>
                     </div>
 
                     {!status ? (
@@ -45,7 +92,7 @@ const Prod = ({ id, status, index, task, addDiscount, delProduct, show, setShow,
                                 <input
                                     type="text"
                                     placeholder="0"
-                                    
+                                    onChange={(e) => setOffer(e.target.value)}
                                     className="form-control rounded-0 shadow-1 fs-6"
                                 />
                                 <select
@@ -69,9 +116,9 @@ const Prod = ({ id, status, index, task, addDiscount, delProduct, show, setShow,
                     }
 
                 </div>
-                <div className='ps-5'>
+                <div className='ps-5' style={{transform:"translateY(-10px)"}}>
                     <Stack>
-                        <div className='text-end px-4 translate-middle-y'>
+                        <div className='text-end px-4'>
                        { task.variants && 
                         (
                             <small
@@ -90,19 +137,21 @@ const Prod = ({ id, status, index, task, addDiscount, delProduct, show, setShow,
                         )  
                        }
                         </div>
+                        
+                        <DndContext sensors={sensors} onDragEnd={handleDragEnd} collisionDetection={closestCorners}>
                         <Collapse in={open} >
                             <div>
+                             <SortableContext items={task.variants || []} strategy={verticalListSortingStrategy}>
                             {
                                 task.variants?.map((vr) => (
-                                    <Variant key={vr.id} {...vr} delVariant={delVariant} vlength={task.variants.length} pro_id={id} />
+                                    <Variant key={vr.id} {...vr} delVariant={delVariant} vlength={task.variants.length} pro_id={id} status={status} offer={offer} />
                                 ))
                             }
+                            </SortableContext>
                             </div>
-                        </Collapse>
+                            </Collapse>
+                            </DndContext>
                     </Stack>
-
-
-
                 </div>
             </Stack>
 

@@ -17,6 +17,7 @@ const Picker = ({el, ele, select, handleSelectVarent}) => {
     <input
         type='checkbox'
         checked={isSelected}
+        readOnly
         className='form-check-input checkbox'
   />
     </div>

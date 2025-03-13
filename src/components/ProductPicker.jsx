@@ -71,6 +71,7 @@ const ProductPicker = ({ show, setShow, handleSelect, handleAdd, select, handleS
                                 <input
                                     type='checkbox'
                                     checked={select?.some(se => se.id === ele.id)}
+                                    readOnly
                                     className='form-check-input checkbox'
                                
                               />
