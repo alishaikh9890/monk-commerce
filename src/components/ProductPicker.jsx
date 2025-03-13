@@ -73,7 +73,7 @@ const ProductPicker = ({ show, setShow, handleSelect, handleAdd, select, handleS
 
     return (
         
-            <Modal size="lg" show={show} onHide={()=>setShow(false)} >
+            <Modal size="lg" show={show} onHide={()=>{setShow(false);setSearch("")}} >
                 <Modal.Header closeButton className='py-2 px-4'>
                     <Modal.Title className='fs-5' >Select Products</Modal.Title>
                 </Modal.Header>
@@ -128,7 +128,7 @@ const ProductPicker = ({ show, setShow, handleSelect, handleAdd, select, handleS
                 </Modal.Body>
                 <Modal.Footer>
                 <p>{select.length} Product Selected</p>
-                    <Button variant="outline-secondary ms-auto" >
+                    <Button variant="outline-secondary ms-auto" onClick={() => {setShow(!show); setSearch("")}} >
                         Cancel
                     </Button>
                     <Button onClick={handleAdd} variant="success" >
