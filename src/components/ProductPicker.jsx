@@ -1,5 +1,5 @@
 import { Button, Modal,ListGroup, Stack, Spinner, Form } from 'react-bootstrap'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 import Picker from './picker/Picker';
 
@@ -9,13 +9,16 @@ const ProductPicker = ({ show, setShow, handleSelect, handleAdd, select, handleS
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null)
+    const [page, setPage] = useState(1)
 
+
+    const myRef= useRef(null)
   
 
     const fetchData = async () => {
         setLoading(true)
         try {
-            const res = await fetch(`https://stageapi.monkcommerce.app/task/products/search?search=${search}&page=1&limit=20`,
+            const res = await fetch(`https://stageapi.monkcommerce.app/task/products/search?search=${search}&page=${page}&limit=10`,
                 {
                     method: "GET",
                     headers: {
@@ -25,21 +28,48 @@ const ProductPicker = ({ show, setShow, handleSelect, handleAdd, select, handleS
                 }
             )
             const arr = await res.json();
-             arr ?  setData(arr) : setData([])
-            console.log(arr)
+             arr ?  setData(arr) : setData((oldArr) => oldArr)
+
         } catch (error) {
             console.log(error)
             setError(error)
         } finally {
             setLoading(false)
-        }
-       
+        }  
     }
 
     useEffect(() => {
         fetchData();
-    }, [search])
+    }, [search, page])
 
+
+    useEffect(()=>{
+        const observer = new IntersectionObserver((param) => {
+            console.log(param)
+            if(param[0].isIntersecting)
+            {
+                observer.unobserve(lastImg)
+                setPage((page) => page+1)
+            }
+        })
+        const lastImg = document.querySelector(".lastImg:last-child")
+
+        if(!lastImg) return;
+
+        observer.observe(lastImg)
+
+
+        return () =>{
+            if(lastImg){
+                observer.unobserve(lastImg)
+            }
+            observer.disconnect();
+        }
+
+    },[show, data])
+  
+    
+    
 
     return (
         
@@ -52,10 +82,10 @@ const ProductPicker = ({ show, setShow, handleSelect, handleAdd, select, handleS
                 </Modal.Header>
                 
                 
-                <Modal.Body className='p-0 overflow-auto'  style={{maxHeight:"70vh"}}>
+                <Modal.Body className='p-0 overflow-auto' id="scroll"  style={{maxHeight:"70vh"}}>
                
                 
-                <ListGroup variant="flush" className='border'>
+                <ul className='border list-group list-group-flush' >
                 {
                     loading ? (
                             <Spinner animation="border" variant='primary' size="lg" className='my-5 mx-auto' role="status">
@@ -65,7 +95,7 @@ const ProductPicker = ({ show, setShow, handleSelect, handleAdd, select, handleS
                         : error ? 
                         "someting went wrong" :
                     data.map((ele) =>   (
-                        <ListGroup.Item  key={ele.id} className='p-0' >
+                        <li  key={ele.id} className='p-0 list-group-item lastImg' ref={myRef} >
                             <Stack direction="horizontal" onClick={() => handleSelect(ele)} className='px-3' gap={3}>
                                 <div className="py-2">
                                 <input
@@ -89,11 +119,11 @@ const ProductPicker = ({ show, setShow, handleSelect, handleAdd, select, handleS
                             }
                                
                             </ListGroup>
-                        </ListGroup.Item>
+                        </li>
                     ))
                 }
                    
-                </ListGroup>
+                </ul>
 
                 </Modal.Body>
                 <Modal.Footer>
