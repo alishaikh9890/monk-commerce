@@ -4,13 +4,19 @@ import { ListGroup, Stack } from 'react-bootstrap'
 
 const Picker = ({el, ele, select, handleSelectVarent}) => {
     const {id, title, inventory_quantity, price } = el;
+
+    const isSelected = select.some((sel) =>
+      sel.id == ele.id && sel.variants.some((variant) => variant.id == id)
+    );
+
+
   return (
     <ListGroup.Item className='py-1' key={id} onClick={() => handleSelectVarent(ele, el)} >
     <Stack className='px-5' direction="horizontal" gap={3}>
     <div className="py-2">
     <input
         type='checkbox'
-        // checked={select.find((sel) => sel.id == ele.id)?.variants?.some((se) => se.id == id) || false}
+        checked={isSelected}
         className='form-check-input checkbox'
   />
     </div>

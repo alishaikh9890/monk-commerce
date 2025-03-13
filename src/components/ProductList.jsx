@@ -46,34 +46,28 @@ function ProductList() {
     }
 
     const handleSelectVarent = (product, variant) => {
-        // let newSelect = [...select]
-        // let newId = newSelect.some(ele=> ele.id == product.id);
-
-        // console.log(newId)
-        
-
-        console.log(product, variant)
-
+        let newSelect = [...select]
           
-        // if(newId)
-        // {
-            // let newProduct = newSelect.find(ele=> ele.id == product.id)
+        let newProduct = newSelect.find(ele=> ele.id == product.id)
+
+        if(newProduct)
+        {     
+                newProduct.variants.some((el) => el.id==variant.id) 
+                    ?
+                newProduct.variants = newProduct.variants.filter(el=> el.id != variant.id) 
+                    :
+                newProduct.variants.push(variant) 
+                ;
                 
-            //     newProduct.variants.some((el) => el==variant.id) 
-            //         ?
-            //     newProduct.variants = newProduct.variants.filter(el=> el.id != variant.id) 
-            //         :
-            //     newProduct.variants = [...newProduct.variants, variant]
-                
-            //     newSelect = newSelect.map((ele) => ele.id == product.id ? ele = newProduct : ele)
-        // }
-        // else
-        // {
-        //     product.variants = product.variants.filter(ele=> ele.id == variant.id)
-        //     newSelect = [...newSelect, product]
-        // }
+                newSelect = newSelect.map((ele) => ele.id == product.id ? {...ele, variants: newProduct.variants} : ele)
+        }
+        else
+        {
+            
+            newSelect.push({...product, variants:[variant]})
+        }
       
-        // setSelect(newSelect)
+        setSelect(newSelect)
     }
 
     const delProduct = (id) => {
