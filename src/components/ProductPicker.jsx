@@ -28,7 +28,7 @@ const ProductPicker = ({ show, setShow, handleSelect, handleAdd, select, handleS
                 }
             )
             const arr = await res.json();
-             arr ?  setData(arr) : setData((oldArr) => oldArr)
+             arr ?  setData(oldArr =>[...oldArr, ...arr]) : setData((oldArr) => oldArr)
 
         } catch (error) {
             console.log(error)
@@ -87,13 +87,13 @@ const ProductPicker = ({ show, setShow, handleSelect, handleAdd, select, handleS
                 
                 <ul className='border list-group list-group-flush' >
                 {
-                    loading ? (
-                            <Spinner animation="border" variant='primary' size="lg" className='my-5 mx-auto' role="status">
-                                 <span className="visually-hidden">Loading...</span>
-                            </Spinner>
-                    )
-                        : error ? 
-                        "someting went wrong" :
+                    // loading ? (
+                    //         <Spinner animation="border" variant='primary' size="lg" className='my-5 mx-auto' role="status">
+                    //              <span className="visually-hidden">Loading...</span>
+                    //         </Spinner>
+                    // )
+                    //     : error ? 
+                    //     "someting went wrong" :
                     data.map((ele) =>   (
                         <li  key={ele.id} className='p-0 list-group-item lastImg' ref={myRef} >
                             <Stack direction="horizontal" onClick={() => handleSelect(ele)} className='px-3' gap={3}>
