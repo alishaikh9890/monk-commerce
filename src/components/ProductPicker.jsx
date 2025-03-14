@@ -17,6 +17,12 @@ const ProductPicker = ({ show, setShow, handleSelect, handleAdd, select, handleS
 
     const fetchData = async () => {
         setLoading(true)
+
+            if(search !== "")
+            {
+                setPage(1)
+            }
+
         try {
             const res = await fetch(`https://stageapi.monkcommerce.app/task/products/search?search=${search}&page=${page}&limit=10`,
                 {
@@ -29,10 +35,9 @@ const ProductPicker = ({ show, setShow, handleSelect, handleAdd, select, handleS
             )
             const arr = await res.json();
           
-            if(search)
+            if(search !== "")
             {
-                arr ?  setData(arr) : setData((oldArr) => oldArr)
-              
+                arr ? setData(arr) : setData([])
             }
             else{
                 arr ? setData(oldArr =>[...oldArr, ...arr]) : setData((oldArr) => oldArr)
@@ -74,7 +79,7 @@ const ProductPicker = ({ show, setShow, handleSelect, handleAdd, select, handleS
             observer.disconnect();
         }
 
-    },[show, data])
+    },[show, page])
   
     
     
@@ -88,7 +93,6 @@ const ProductPicker = ({ show, setShow, handleSelect, handleAdd, select, handleS
                 <Modal.Header className='py-2 px-4'>
                 <input placeholder='🔎 search items' onChange={(e) => setSearch(e.target.value)} className='form-control rounded-0 px-4' />
                 </Modal.Header>
-                
                 
                 <Modal.Body className='p-0 overflow-auto' id="scroll"  style={{maxHeight:"70vh"}}>
                
